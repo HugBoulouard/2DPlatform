@@ -3,11 +3,10 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:platform_game/actors/player.dart';
-import 'package:platform_game/levels/level.dart';
+import 'package:platform_game/components/player.dart';
+import 'package:platform_game/components/level.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:platform_game/actors/player.dart';
 
 class PixelAdventure extends FlameGame {
   @override
@@ -29,7 +28,6 @@ class PixelAdventure extends FlameGame {
     addAll([cam, world]);
 
     accelerometerEvents.listen((AccelerometerEvent event) {
-      // Utilisez les données de l'accéléromètre ici
       accelerometerX = event.x;
       accelerometerY = event.y;
       accelerometerZ = event.z;
@@ -45,27 +43,22 @@ class PixelAdventure extends FlameGame {
   }
 
   void updateAccelerometer() {
-    if (accelerometerY.abs() > 1) {
-      switch (accelerometerX.sign.toInt()) {
-        case 1:
-          player.playerDirection = accelerometerY > 1
-              ? PlayerDirection.right
-              : accelerometerY < -1
-                  ? PlayerDirection.left
-                  : PlayerDirection.none;
-          break;
-        case -1:
-          player.playerDirection = accelerometerY < -1
-              ? PlayerDirection.right
-              : accelerometerY > 1
-                  ? PlayerDirection.left
-                  : PlayerDirection.none;
-          break;
-        default:
-          player.playerDirection = PlayerDirection.none;
+    if (accelerometerX > 0) {
+      if (accelerometerY > 1) {
+        player.hozizontalMovement = 1;
+      } else if (accelerometerY < -1) {
+        player.hozizontalMovement = -1;
+      } else {
+        player.hozizontalMovement = 0;
       }
     } else {
-      player.playerDirection = PlayerDirection.none;
+      if (accelerometerY < -1) {
+        player.hozizontalMovement = 1;
+      } else if (accelerometerY > 1) {
+        player.hozizontalMovement = -1;
+      } else {
+        player.hozizontalMovement = 0;
+      }
     }
   }
 }
